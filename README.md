@@ -1,8 +1,8 @@
-Un-official Tripay Payment Gateway
-===============
-[![Latest Stable Version](https://poser.pugx.org/muhammadnan/tripay-payment-gateway/v)](//packagist.org/packages/muhammadnan/tripay-payment-gateway)
-[![Total Downloads](https://poser.pugx.org/muhammadnan/tripay-payment-gateway/downloads)](//packagist.org/packages/muhammadnan/tripay-payment-gateway)
-[![License](https://poser.pugx.org/muhammadnan/tripay-payment-gateway/license)](//packagist.org/packages/muhammadnan/tripay-payment-gateway)
+# Un-official Tripay Payment Gateway
+
+[![Latest Stable Version](https://poser.pugx.org/rootwritter/tripay-payment-gateway/v)](//packagist.org/packages/rootwritter/tripay-payment-gateway)
+[![Total Downloads](https://poser.pugx.org/rootwritter/tripay-payment-gateway/downloads)](//packagist.org/packages/rootwritter/tripay-payment-gateway)
+[![License](https://poser.pugx.org/rootwritter/tripay-payment-gateway/license)](//packagist.org/packages/rootwritter/tripay-payment-gateway)
 
 This package is un-official, already compatible with Composer, for more details please visit [Documentation](https://payment.tripay.co.id/developer).
 _This package is made to make it easier for php users_
@@ -10,19 +10,23 @@ _This package is made to make it easier for php users_
 IMPORTANT: Make sure you read the documentation and understand what these methods are used for!
 
 need PHP 7 and above to use this package
+
 ## Instalation
+
 ```
-composer require muhammadnan/tripay-payment-gateway
+composer require rootwritter/tripay-payment-gateway
 ```
 
 ## Configuration
 
 before starting further, you must define or import a tripay for further configuration
+
 ```php
 use Tripay\Main;
 ```
 
 then after that configure api-key, private-key, merchant-code
+
 ```php
 $main = new Main(
     'your-api-key',
@@ -31,32 +35,34 @@ $main = new Main(
     'sandbox' // fill for sandbox mode, leave blank if in production mode
 );
 ```
+
 For mode by default it will be in production mode, to change it to sandbox mode, you can add a 'sandbox' after the merchant code
 
 ## Contents available
+
 content method available so far
 
-| Method  | Contents  | Status |
-|---|---|---|
-| `initChannelPembayaran()` | `Channel Pembayaran` | OK |
-| `initInstruksiPembayaran(string $code)` | `Instruksi Pembayaran` | OK |
-| `initMerchantChannelPembayaran(string $code)` | `Merchant Channel Pembayaran` | OK |
-| `initKalkulatorBiaya(string $code, int $amount)` | `Kalkulator Biaya` | OK |
-| `initTransaction(string $merchantRef)` | `Transaksi Open/Close` | OK |
-| `initCallback()` | `Callback` | OK |
+| Method                                           | Contents                      | Status |
+| ------------------------------------------------ | ----------------------------- | ------ |
+| `initChannelPembayaran()`                        | `Channel Pembayaran`          | OK     |
+| `initInstruksiPembayaran(string $code)`          | `Instruksi Pembayaran`        | OK     |
+| `initMerchantChannelPembayaran(string $code)`    | `Merchant Channel Pembayaran` | OK     |
+| `initKalkulatorBiaya(string $code, int $amount)` | `Kalkulator Biaya`            | OK     |
+| `initTransaction(string $merchantRef)`           | `Transaksi Open/Close`        | OK     |
+| `initCallback()`                                 | `Callback`                    | OK     |
 
 ## Request available
 
 request can return the available content, the list of available methods is as follows
 
-| Method  | Description  |
-|---|---|
-| `getRequest(string $url)`  | return return guzzle http client |
-| `getResponse()`  | return response |
-| `getJson()`  | return json decode  |
-| `getStatusCode()`  | return status code  |
-| `getStatusCode()`  | return boolean  |
-| `getData()`  | return data response  |
+| Method                    | Description                      |
+| ------------------------- | -------------------------------- |
+| `getRequest(string $url)` | return return guzzle http client |
+| `getResponse()`           | return response                  |
+| `getJson()`               | return json decode               |
+| `getStatusCode()`         | return status code               |
+| `getStatusCode()`         | return boolean                   |
+| `getData()`               | return data response             |
 
 ## Channel Pembayaran
 
@@ -83,7 +89,7 @@ the next method can be seen in the [request method](#request-available) or can b
 
 This API is used to obtain a list of payment channels available in your Merchant account along with complete information including transaction fees for each channel
 
-```php 
+```php
 $code = 'BRIVA'; //more info code, check your account
 $init = $main->initMerchantChannelPembayaran($code);
 ```
@@ -91,6 +97,7 @@ $init = $main->initMerchantChannelPembayaran($code);
 the next method can be seen in the [request method](#request-available) or can be seen in examples
 
 ## Kalkulator Biaya
+
 This API is used to obtain detailed transaction fee calculations for each channel based on a specified nominal
 
 ```php
@@ -102,12 +109,16 @@ $init = $main->initKalkulatorBiaya($code, $amount);
 the next method can be seen in the [request method](#request-available) or can be seen in examples
 
 ## Transaction
+
 Before proceeding to the next step in transactions, please configure your reference merchant
-```php 
+
+```php
 $merchantRef = 'your-merchant-ref';//your merchant reference
 $init = $main->initTransaction($merchantRef);
 ```
+
 Before making a signature, please set the amount for close transactions and for open transactions, please set the payment method
+
 ```php
 $init->setAmount(1000); // for close payment
 $init->setMethod('BRIVAOP'); // for open payment
@@ -116,7 +127,8 @@ $init->setMethod('BRIVAOP'); // for open payment
 Note: if you use an open payment do not define the amount and vice versa if you use a close payment do not define the amount
 
 ## Create Signature
-```php 
+
+```php
 $signature = $init->createSignature();
 ```
 
@@ -124,13 +136,14 @@ $signature = $init->createSignature();
 
 To define close transaction, use the `closeTransaction ()` method
 
-```php 
+```php
 $transaction = $init->closeTransaction(); // define your transaction type, for close transaction use `closeTransaction()`
 ```
 
 After you define a close transaction, please set the payload with the `setPayload (array $ data)` method
 
-****examples:****
+\***\*examples:\*\***
+
 ```php
 $transaction->setPayload([
     'method'            => 'BRIVA', // IMPORTANT, dont fill by `getMethod()`!, for more code method you can check here https://payment.tripay.co.id/developer
@@ -154,15 +167,16 @@ $transaction->setPayload([
 ]); // set your payload, with more examples https://payment.tripay.co.id/developer
 ```
 
-for get the payload u can use ```getPayload()``` method,
+for get the payload u can use `getPayload()` method,
 
-after set transaction u can sent the request and get data directly with the `` getData ()  `` method or for more method u can seen in the [request method](#request-available) or can be see in examples
+after set transaction u can sent the request and get data directly with the `getData () ` method or for more method u can seen in the [request method](#request-available) or can be see in examples
 
 ### Get Close Detail Transaction
 
 To see further transaction data, you can see it in transaction details, for close transactions, see below
 where to get reference code? please go to the simulator menu and get it in the transaction menu, there is a reference code that can be matched here
-```php 
+
+```php
 $referenceCode = 'your-reference-code'; // fill by reference code
 $detail = $transaction->getDetail($referenceCode); // return get detail your transaction with your reference code
 ```
@@ -176,9 +190,11 @@ To define close transaction, use the `openTransaction ()` method
 ```php
 $transaction = $init->openTransaction(); // define your transaction type, for close transaction use `openTransaction()`
 ```
+
 After you define a open transaction, please set the payload with the `setPayload (array $ data)` method
 
-****examples:****
+\***\*examples:\*\***
+
 ```php
 $transaction->setPayload([
     'method'            => $this->getMethod(),
@@ -188,16 +204,16 @@ $transaction->setPayload([
 ]); // set your payload, with more examples https://payment.tripay.co.id/developer
 ```
 
-for get the payload u can use ```getPayload()``` method,
+for get the payload u can use `getPayload()` method,
 
-after set transaction u can sent the request and get data directly with the `` getData ()  `` method or for more method u can seen in the [request method](#request-available) or can be see in examples
+after set transaction u can sent the request and get data directly with the `getData () ` method or for more method u can seen in the [request method](#request-available) or can be see in examples
 
 #### Get Open Detail Transaction
 
 To see further transaction data, you can see it in transaction details, for close transactions, see below
 where can i get uuid? please open the transaction menu then select open payment then there is a uuid code there
 
-```php 
+```php
 $uuidCode = 'your-uuid-code'; // fill by reference code
 
 $detail = $transaction->getDetail($uuid); // return get detail your open transaction with your uuid code
@@ -206,13 +222,16 @@ $detail = $transaction->getDetail($uuid); // return get detail your open transac
 the next method can be seen in the [request method](#request-available) or can be seen in examples
 
 ### Get Daftar Pembayaran Transaction
+
 To see a list of payments made in open transactions you can use this method
 you can get the uuid in your account.
-```php 
+
+```php
 $referenceCode = 'your-reference-code'; // fill by reference code
 
 $detail = $transaction->getDetail($referenceCode); // return get detail your transaction with your reference code
 ```
+
 the next method can be seen in the [request method](#request-available) or can be seen in examples
 
 ## Callback
@@ -229,7 +248,7 @@ $init = $main->initCallback(); // return callback
 
 to get the json that was sent by tripay you can use the method below
 
-```php 
+```php
 $init->get(); // get all callback
 ```
 
@@ -237,7 +256,7 @@ $init->get(); // get all callback
 
 rather than wasting time on json_decode, this package provides that
 
-```php 
+```php
 $init->getJson(); // get json callback
 ```
 
@@ -245,7 +264,7 @@ $init->getJson(); // get json callback
 
 take signature from tripay using the method below
 
-```php 
+```php
 $init->signature(); // callback signature
 ```
 
@@ -253,7 +272,7 @@ $init->signature(); // callback signature
 
 tripay also sends a callback signature to validate customer data
 
-```php 
+```php
 $init->callbackSignature(); // callback signature
 ```
 
@@ -261,21 +280,23 @@ $init->callbackSignature(); // callback signature
 
 for re-validation, tripay sends an event in the form of `payment_status` this package also captures that
 
-``php
+`` php
 $init->callEvent(); // callback event, return `payment_status`
-``
+ ``
 
 ### Validate Signature
+
 To shorten the code, we prepared signature validation as well.
 
-```php 
+```php
 $init->validateSignature(); // return `true` is valid signature, `false` invalid signature
 ```
 
 ### Validate Event
+
 To shorten the code too, we also set up validate events to go a step further
 
-```php 
+```php
 $init->validateEvent(); // return `true` is PAID, `false` meaning UNPAID,REFUND,etc OR call event undefined
 ```
 
@@ -285,4 +306,4 @@ This package is tested using PHPunit, but mostly direct testing
 
 ## Contribute
 
-Project ini saya buat karena sebelumnya saya menggunakan tripay sebagai payment gateway, daripada kode saya nganggur jadi ada baiknya saya share. so, silahkan berkontribusi baik dari dokumentasi atau membenahi script dari package ini ;) 
+Project ini saya buat karena sebelumnya saya menggunakan tripay sebagai payment gateway, daripada kode saya nganggur jadi ada baiknya saya share. so, silahkan berkontribusi baik dari dokumentasi atau membenahi script dari package ini ;)
